@@ -16,7 +16,7 @@ public class SpringBootProviderApplication {
 	@Bean
 	CommandLineRunner init(KafkaTemplate<String, String> kafkaTemplate) {
 		return args -> {
-			kafkaTemplate.send("kabrodeMrd.Topic", "Kabro de mrd el que lo lee");
+			kafkaTemplate.send("kafkaPrueba.Topic", "Kabro de mrd el que lo lee");
 
 			kafkaTemplate.flush();
 

@@ -23,7 +23,7 @@ public class KafkaTopicConfig {
         configuration.put(TopicConfig.RETENTION_MS_CONFIG,"10000012"); //Tamaño maximo de cada mensaje
 
 
-        return TopicBuilder.name("kabrodeMrd.Topic")
+        return TopicBuilder.name("kafkaPrueba.Topic")
                 .partitions(2)
                 .replicas(1)
                 .configs(configuration)
