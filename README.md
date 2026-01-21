@@ -1,52 +1,128 @@
-# servicio-kafka
-Kafka Microservices Integration - Spring Boot & Docker
-Este proyecto demuestra la implementación de una arquitectura de mensajería asíncrona utilizando Apache Kafka como broker, con dos microservicios desarrollados en Spring Boot 3.5.10-SNAPSHOT.
+# servicio-kafka-springboot
 
-Requisitos Previos
-Antes de ejecutar los microservicios, es necesario contar con las siguientes herramientas:
+## Kafka Microservices Integration – Spring Boot & Docker
 
-Docker Desktop: Para gestionar el contenedor de Kafka.
+Este proyecto demuestra la implementación de una **arquitectura de mensajería asíncrona** utilizando **Apache Kafka** como broker, con **dos microservicios desarrollados en Spring Boot**. El objetivo principal es mostrar un flujo básico *producer–consumer* en un entorno local, orientado a fines educativos y de aprendizaje de microservicios.
 
-Java 22: Versión de JDK utilizada para el desarrollo.
+---
 
-Maven: Para la gestión de dependencias y construcción del proyecto.
+## Descripción General
 
-Configuración de Infraestructura
-1. Instalación de Kafka con Docker
-Para instalar y correr la última versión de Kafka, ejecuta el siguiente comando en tu terminal (PowerShell o CMD):
+La solución está compuesta por:
 
-Bash
+* **Provider (Producer)**: Microservicio encargado de publicar mensajes en un tópico de Kafka.
+* **Consumer**: Microservicio que consume y procesa los mensajes publicados en el broker.
+* **Apache Kafka**: Broker de mensajería levantado mediante Docker.
+
+El flujo de datos es completamente asíncrono y desacoplado, permitiendo una comunicación eficiente entre microservicios.
+
+---
+
+## Tecnologías Utilizadas
+
+* **Java 22**
+* **Spring Boot 3.5.10-SNAPSHOT**
+* **Apache Kafka**
+* **Docker & Docker Desktop**
+* **Maven**
+
+---
+
+## Requisitos Previos
+
+Antes de ejecutar el proyecto, asegúrate de contar con lo siguiente:
+
+* Docker Desktop instalado y en ejecución.
+* JDK 22 configurado correctamente.
+* Maven instalado y accesible desde la terminal.
+* Un IDE compatible con Spring Boot (se recomienda IntelliJ IDEA).
+
+---
+
+## Configuración de Infraestructura
+
+### 1. Instalación y Ejecución de Kafka con Docker
+
+Para levantar un broker de Kafka en tu entorno local, ejecuta el siguiente comando en tu terminal (PowerShell o CMD):
+
+```bash
 docker run -d --name kafka -p 9092:9092 apache/kafka:latest
-Nota: Asegúrate de que el contenedor esté en estado "Running" antes de proceder.
+```
 
-2. Liberar Puertos
-El microservicio Provider utiliza el puerto 8080. Asegúrate de que no esté ocupado por otro proceso (como bases de datos u otros servidores web) para evitar errores al levantar la aplicación.
+Verifica que el contenedor se encuentre en estado **Running** antes de continuar.
 
-Ejecución del Proyecto
-1. Levantar los Microservicios
-Desde tu IDE (IntelliJ IDEA recomendado), ejecuta las aplicaciones en este orden:
+---
 
-SpringBootConsumerApplication: Se levantará en el puerto 8081.
+### 2. Configuración de Puertos
 
-SpringBootProviderApplication: Se levantará en el puerto 8080.
+* **Provider**: Puerto `8080`
+* **Consumer**: Puerto `8081`
+* **Kafka Broker**: Puerto `9092`
 
-2. Escuchar Mensajes desde la Terminal (Modo Escucha)
-Para verificar que los mensajes están llegando correctamente al broker de Kafka, abre una terminal y ejecuta el comando de consumo:
+Asegúrate de que estos puertos no estén siendo utilizados por otros procesos para evitar conflictos al iniciar las aplicaciones.
 
-Bash
-docker exec -it kafka /opt/kafka/bin/kafka-console-consumer.sh --topic kafkaprueba.Topic --from-beginning --bootstrap-server localhost:9092
+---
 
-Detalles Técnicos
-Configuración del Tópico
-El tópico se crea automáticamente al levantar el Provider con las siguientes especificaciones:
+## Ejecución del Proyecto
 
-Nombre: kafkaprueba.Topic
+### 1. Levantar los Microservicios
 
-Particiones: 2
+Desde tu IDE, ejecuta los microservicios en el siguiente orden:
 
-Réplicas: 1 (Configurado para entorno local de un solo nodo)
+1. **SpringBootConsumerApplication**
+   Se levantará en el puerto `8081` y quedará a la espera de mensajes.
 
-Flujo de Datos
-Producer: Envía un mensaje de prueba al arrancar mediante un CommandLineRunner.
+2. **SpringBootProviderApplication**
+   Se levantará en el puerto `8080` y enviará un mensaje de prueba al iniciar la aplicación.
 
-Consumer: Utiliza la anotación @KafkaListener para procesar y mostrar los mensajes en la consola de IntelliJ.
+---
+
+### 2. Verificación de Mensajes desde la Terminal
+
+Para confirmar que los mensajes están llegando correctamente al broker de Kafka, abre una terminal y ejecuta el siguiente comando:
+
+```bash
+docker exec -it kafka /opt/kafka/bin/kafka-console-consumer.sh \
+--topic kafkaprueba.Topic \
+--from-beginning \
+--bootstrap-server localhost:9092
+```
+
+Este comando permite escuchar los mensajes publicados en el tópico desde el inicio.
+
+---
+
+## Detalles Técnicos
+
+### Configuración del Tópico
+
+El tópico se crea automáticamente al iniciar el microservicio Provider con la siguiente configuración:
+
+* **Nombre**: `kafkaprueba.Topic`
+* **Particiones**: 2
+* **Factor de Réplica**: 1 (configurado para un entorno local de un solo nodo)
+
+---
+
+### Flujo de Datos
+
+* **Producer**: Publica un mensaje de prueba al arrancar la aplicación utilizando un `CommandLineRunner`.
+* **Consumer**: Escucha el tópico mediante la anotación `@KafkaListener` y muestra los mensajes recibidos en la consola del IDE.
+
+---
+
+## Objetivo del Proyecto
+
+Este proyecto sirve como base para:
+
+* Comprender la integración de Kafka con Spring Boot.
+* Introducir conceptos de mensajería asíncrona en arquitecturas de microservicios.
+* Practicar el uso de Docker para levantar infraestructura local.
+
+Puede extenderse fácilmente para incluir serialización avanzada, manejo de errores, múltiples consumidores o integración con bases de datos.
+
+---
+
+## Notas Finales
+
+Este entorno está pensado exclusivamente para desarrollo y pruebas locales. Para un entorno productivo se deben considerar configuraciones adicionales como seguridad, replicación avanzada, monitoreo y gestión de offsets.
