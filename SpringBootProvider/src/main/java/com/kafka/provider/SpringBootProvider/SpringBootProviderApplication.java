@@ -1,7 +1,10 @@
 package com.kafka.provider.SpringBootProvider;
 
+import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.Bean;
+import org.springframework.kafka.core.KafkaTemplate;
 
 @SpringBootApplication
 public class SpringBootProviderApplication {
@@ -10,4 +13,17 @@ public class SpringBootProviderApplication {
 		SpringApplication.run(SpringBootProviderApplication.class, args);
 	}
 
+	@Bean
+	CommandLineRunner init(KafkaTemplate<String, String> kafkaTemplate) {
+		return args -> {
+			kafkaTemplate.send("kabrodeMrd.Topic", "Kabro de mrd el que lo lee");
+
+			kafkaTemplate.flush();
+
+			System.out.println("¡Mensaje enviado con éxito al broker!");
+		};
+	}
+
 }
+
+
